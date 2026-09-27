@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "accurateblockraycasts",
+  "version": "${version}",
+  "name": "Accurate Block Raycasts",
+  "description": "Gameplay raycasts that respect intentional openings in supported blocks.",
+  "authors": ["Accurate Block Raycasts contributors"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.github.accurateblockraycasts.AccurateBlockRaycasts"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
