@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "accurateblockraycasts-gametest",
+  "version": "0.1.0-SNAPSHOT",
+  "name": "Accurate Block Raycasts Game Tests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "io.github.accurateblockraycasts.gametest.OakDoorGameplayGameTest",
+      "io.github.accurateblockraycasts.gametest.TrapdoorGameplayGameTest"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

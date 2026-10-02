@@ -20,6 +20,7 @@ bin/
 run/
 
 # JVM diagnostics
+logs/
 hs_err_*.log
 replay_*.log
 *.hprof
