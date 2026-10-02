@@ -61,6 +61,11 @@ assets during gameplay.
 continuous 16-by-32 surface, with rows indexed bottom-to-top. It retains the
 immutable halves rather than duplicating their packed bits.
 
+`OakDoorRayProfile` combines this surface with `DoorTransform`. It returns
+`OPEN` or `SOLID` only when the finite ray crosses the door mid-plane within
+the mask bounds. Exact outer edges and rays with no relevant plane
+intersection return `NO_SPECIAL_RESULT`, conservatively preserving vanilla.
+
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
 segment, and `Plane.intersect` returns no result for parallel or out-of-range
