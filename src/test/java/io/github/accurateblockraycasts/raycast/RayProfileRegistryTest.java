@@ -66,9 +66,21 @@ class RayProfileRegistryTest {
 
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BIRCH_TRAPDOOR.defaultBlockState()));
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.DARK_OAK_TRAPDOOR.defaultBlockState()));
-        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.IRON_TRAPDOOR.defaultBlockState()));
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.PALE_OAK_TRAPDOOR.defaultBlockState()));
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.SPRUCE_TRAPDOOR.defaultBlockState()));
+    }
+
+    @Test
+    void resolvesIronAndEveryCopperTrapdoorState() {
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.IRON_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_TRAPDOOR.weathering().unaffected().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_TRAPDOOR.weathering().exposed().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_TRAPDOOR.weathering().weathered().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_TRAPDOOR.weathering().oxidized().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_TRAPDOOR.waxed().unaffected().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_TRAPDOOR.waxed().exposed().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_TRAPDOOR.waxed().weathered().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_TRAPDOOR.waxed().oxidized().defaultBlockState()));
     }
 
     @Test

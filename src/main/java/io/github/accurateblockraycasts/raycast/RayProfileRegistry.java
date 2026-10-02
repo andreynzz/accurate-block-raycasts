@@ -34,6 +34,15 @@ public final class RayProfileRegistry {
     private static final RayProfile OAK_TRAPDOOR = new TrapdoorRayProfile(Blocks.OAK_TRAPDOOR, TrapdoorMasks.oak());
     private static final RayProfile POPLAR_TRAPDOOR = new TrapdoorRayProfile(Blocks.POPLAR_TRAPDOOR, TrapdoorMasks.poplar());
     private static final RayProfile WARPED_TRAPDOOR = new TrapdoorRayProfile(Blocks.WARPED_TRAPDOOR, TrapdoorMasks.warped());
+    private static final RayProfile IRON_TRAPDOOR = new TrapdoorRayProfile(Blocks.IRON_TRAPDOOR, TrapdoorMasks.iron());
+    private static final RayProfile COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.weathering().unaffected(), TrapdoorMasks.copper());
+    private static final RayProfile EXPOSED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.weathering().exposed(), TrapdoorMasks.copper());
+    private static final RayProfile WEATHERED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.weathering().weathered(), TrapdoorMasks.copper());
+    private static final RayProfile OXIDIZED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.weathering().oxidized(), TrapdoorMasks.copper());
+    private static final RayProfile WAXED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().unaffected(), TrapdoorMasks.copper());
+    private static final RayProfile WAXED_EXPOSED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().exposed(), TrapdoorMasks.copper());
+    private static final RayProfile WAXED_WEATHERED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().weathered(), TrapdoorMasks.copper());
+    private static final RayProfile WAXED_OXIDIZED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().oxidized(), TrapdoorMasks.copper());
 
     private RayProfileRegistry() {
     }
@@ -112,6 +121,33 @@ public final class RayProfileRegistry {
         }
         if (state.is(Blocks.COPPER_DOOR.waxed().oxidized())) {
             return WAXED_OXIDIZED_COPPER_DOOR;
+        }
+        if (state.is(Blocks.COPPER_TRAPDOOR.weathering().unaffected())) {
+            return COPPER_TRAPDOOR;
+        }
+        if (state.is(Blocks.COPPER_TRAPDOOR.weathering().exposed())) {
+            return EXPOSED_COPPER_TRAPDOOR;
+        }
+        if (state.is(Blocks.COPPER_TRAPDOOR.weathering().weathered())) {
+            return WEATHERED_COPPER_TRAPDOOR;
+        }
+        if (state.is(Blocks.COPPER_TRAPDOOR.weathering().oxidized())) {
+            return OXIDIZED_COPPER_TRAPDOOR;
+        }
+        if (state.is(Blocks.COPPER_TRAPDOOR.waxed().unaffected())) {
+            return WAXED_COPPER_TRAPDOOR;
+        }
+        if (state.is(Blocks.COPPER_TRAPDOOR.waxed().exposed())) {
+            return WAXED_EXPOSED_COPPER_TRAPDOOR;
+        }
+        if (state.is(Blocks.COPPER_TRAPDOOR.waxed().weathered())) {
+            return WAXED_WEATHERED_COPPER_TRAPDOOR;
+        }
+        if (state.is(Blocks.COPPER_TRAPDOOR.waxed().oxidized())) {
+            return WAXED_OXIDIZED_COPPER_TRAPDOOR;
+        }
+        if (state.is(Blocks.IRON_TRAPDOOR)) {
+            return IRON_TRAPDOOR;
         }
         return state.is(Blocks.WARPED_TRAPDOOR) ? WARPED_TRAPDOOR : null;
     }

@@ -57,6 +57,16 @@ public final class TrapdoorMasks {
         "###...####...###", "###...####...###", "###...####...###",
         SOLID, SOLID, SOLID
     );
+    // Iron uses the same verified opening layout as oak, but has its own profile.
+    private static final PixelMask IRON = OAK;
+    // All weathering and wax states use this same verified copper opening layout.
+    private static final PixelMask COPPER = mask(
+        SOLID, SOLID, SOLID,
+        "#####......#####", "######....######", "###.###..###.###", "###..######..###",
+        "###...#..#...###", "###...#..#...###", "###..######..###", "###.###..###.###",
+        "######....######", "#####......#####",
+        SOLID, SOLID, SOLID
+    );
     private static final PixelMask POPLAR = mask(
         SOLID, SOLID, SOLID, SOLID, SOLID,
         "#######..#######", "######....######", "#####......#####", "#####......#####", "######....######", "#######..#######",
@@ -80,6 +90,8 @@ public final class TrapdoorMasks {
     public static PixelMask jungle() { return JUNGLE; }
     public static PixelMask mangrove() { return MANGROVE; }
     public static PixelMask oak() { return OAK; }
+    public static PixelMask iron() { return IRON; }
+    public static PixelMask copper() { return COPPER; }
     public static PixelMask poplar() { return POPLAR; }
     public static PixelMask warped() { return WARPED; }
 

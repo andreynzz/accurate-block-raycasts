@@ -26,6 +26,8 @@ class TrapdoorMasksTest {
             Arguments.of(TrapdoorMasks.jungle(), 5, 3),
             Arguments.of(TrapdoorMasks.mangrove(), 6, 5),
             Arguments.of(TrapdoorMasks.oak(), 3, 3),
+            Arguments.of(TrapdoorMasks.iron(), 3, 3),
+            Arguments.of(TrapdoorMasks.copper(), 5, 3),
             Arguments.of(TrapdoorMasks.poplar(), 7, 5),
             Arguments.of(TrapdoorMasks.warped(), 3, 3)
         );
