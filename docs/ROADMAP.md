@@ -60,11 +60,12 @@ projectiles and vision, and be validated before the next begins.
 - Two server GameTests load a datapack-defined `minecraft:birch_door` profile
   and verify both arrow traversal to a later block and skeleton line of sight;
   the full Java 25 GameTest suite passes with 23 required tests.
+- External mod registration through `RayProfileRegistry`, with explicit
+  duplicate rejection and datapack precedence over mod-provided profiles.
 
 ## Planned sequence
 
-1. Add an external registration API for mod compatibility.
-2. Only then investigate resource-pack/model-derived geometry.
+1. Investigate resource-pack/model-derived geometry.
 
 ## Scope guardrails
 

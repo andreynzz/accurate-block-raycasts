@@ -1,9 +1,11 @@
 package io.github.accurateblockraycasts.raycast;
 
 import io.github.accurateblockraycasts.geometry.Vec3;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -46,6 +48,7 @@ public final class RayProfileRegistry {
     private static final RayProfile WAXED_WEATHERED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().weathered(), TrapdoorMasks.copper());
     private static final RayProfile WAXED_OXIDIZED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().oxidized(), TrapdoorMasks.copper());
     private volatile Map<Block, RayProfile> dataProfiles = Map.of();
+    private volatile Map<Block, RayProfile> registeredProfiles = Map.of();
 
     private RayProfileRegistry() {
     }
@@ -59,6 +62,10 @@ public final class RayProfileRegistry {
         RayProfile dataProfile = dataProfiles.get(state.getBlock());
         if (dataProfile != null) {
             return dataProfile;
+        }
+        RayProfile registeredProfile = registeredProfiles.get(state.getBlock());
+        if (registeredProfile != null) {
+            return registeredProfile;
         }
         if (state.is(Blocks.OAK_DOOR)) {
             return OakDoorRayProfile.INSTANCE;
@@ -159,9 +166,32 @@ public final class RayProfileRegistry {
         return state.is(Blocks.WARPED_TRAPDOOR) ? WARPED_TRAPDOOR : null;
     }
 
+    /**
+     * Registers one mod-provided profile. Call during common mod initialization.
+     *
+     * <p>A server data-pack profile for the same block takes precedence, while
+     * a second external registration for that block is rejected to keep mod
+     * load order from silently changing gameplay geometry.
+     */
+    public synchronized void register(Block block, RayProfile profile) {
+        Objects.requireNonNull(block, "block");
+        Objects.requireNonNull(profile, "profile");
+        if (registeredProfiles.containsKey(block)) {
+            throw new IllegalStateException("a ray profile is already registered for " + BuiltInRegistries.BLOCK.getKey(block));
+        }
+        Map<Block, RayProfile> updatedProfiles = new HashMap<>(registeredProfiles);
+        updatedProfiles.put(block, profile);
+        registeredProfiles = Map.copyOf(updatedProfiles);
+    }
+
     /** Atomically replaces the profiles loaded from server data packs. */
     void replaceDataProfiles(Map<Block, RayProfile> profiles) {
         dataProfiles = Map.copyOf(profiles);
+    }
+
+    /** Test-only replacement hook for isolated external-registration coverage. */
+    void replaceRegisteredProfiles(Map<Block, RayProfile> profiles) {
+        registeredProfiles = Map.copyOf(profiles);
     }
 
     /** Returns whether a supported profile has an opening at this world point. */
