@@ -97,6 +97,15 @@ the chosen `type`. Profiles still use the same server-side geometry for arrows
 and common mob line of sight; this feature does not inspect client textures or
 models.
 
+## Mod registration API
+
+Other mods may register one server-safe `RayProfile` for one block during their
+common initialization through `RayProfileRegistry.INSTANCE.register(block,
+profile)`. The profile is evaluated by the same shared arrow and mob-vision
+paths as built-in profiles. A datapack profile for that block takes precedence;
+duplicate external registrations fail explicitly rather than depending on mod
+load order.
+
 ## CI and releases
 
 GitHub Actions validates every push to `develop`, every pull request targeting
