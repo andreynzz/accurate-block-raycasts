@@ -1,9 +1,13 @@
 package io.github.accurateblockraycasts.mixin;
 
 import io.github.accurateblockraycasts.raycast.ArrowBlockRaycaster;
+import io.github.accurateblockraycasts.raycast.OakDoorRayProfile;
+import io.github.accurateblockraycasts.geometry.Vec3;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,6 +20,25 @@ import org.spongepowered.asm.mixin.injection.Redirect;
  */
 @Mixin(AbstractArrow.class)
 abstract class AbstractArrowMixin {
+    @Redirect(
+        method = "tick",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"
+        )
+    )
+    private BlockState accurateBlockRaycasts$skipOpeningForInGroundCheck(Level level, net.minecraft.core.BlockPos position) {
+        BlockState state = level.getBlockState(position);
+        if (!level.isClientSide() && OakDoorRayProfile.INSTANCE.isPassableAt(
+            state,
+            position,
+            new Vec3(((AbstractArrow) (Object) this).getX(), ((AbstractArrow) (Object) this).getY(), ((AbstractArrow) (Object) this).getZ())
+        )) {
+            return Blocks.AIR.defaultBlockState();
+        }
+        return state;
+    }
+
     @Redirect(
         method = "tick",
         at = @At(
