@@ -38,10 +38,23 @@ projectiles and vision, and be validated before the next begins.
   on the equivalent vanilla-blocking path.
 - Twelve server GameTests for representative wood, iron, and copper doors:
   arrow traversal through openings, solid-pixel blocking, and skeleton vision.
+- `TrapdoorTransform` and `TrapdoorLocalCoordinates`, covering `FACING`,
+  `OPEN`, `HALF`, all horizontal facings, parallel rays, and mask boundaries.
+- Shared planar `TrapdoorRayProfile` sampling through `RayProfileRegistry`.
+- Manually verified static profiles for acacia, bamboo, cherry, crimson,
+  jungle, mangrove, oak, poplar, warped, iron, and every copper oxidation/wax
+  variant. Birch, dark oak, pale oak, and spruce trapdoors intentionally retain
+  vanilla fallback because they are visually opaque.
+- Nine server GameTests for representative wood, iron, and copper trapdoors:
+  arrow traversal through an opening to a later block, solid-pixel blocking,
+  and skeleton vision. These tests are defined but have not yet been run in
+  this workspace because its available JDK is 17 and the project requires
+  Java 25.
 
 ## Planned sequence
 
-1. Add trapdoors.
+1. Run the full unit and GameTest suites with Java 25, including the new
+   trapdoor coverage.
 2. Introduce data-driven profiles.
 3. Add an external registration API for mod compatibility.
 4. Only then investigate resource-pack/model-derived geometry.
