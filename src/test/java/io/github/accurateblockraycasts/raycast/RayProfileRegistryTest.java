@@ -1,6 +1,7 @@
 package io.github.accurateblockraycasts.raycast;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,6 +29,18 @@ class RayProfileRegistryTest {
     @Test
     void doesNotResolveProfilesForUnsupportedBlocks() {
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.STONE.defaultBlockState()));
+    }
+
+    @Test
+    void resolvesProfilesOnlyForVerifiedDoorsWithOpenings() {
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.ACACIA_DOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BAMBOO_DOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.CHERRY_DOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.JUNGLE_DOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.POPLAR_DOOR.defaultBlockState()));
+        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BIRCH_DOOR.defaultBlockState()));
+        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.CRIMSON_DOOR.defaultBlockState()));
+        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.SPRUCE_DOOR.defaultBlockState()));
     }
 
     @Test
