@@ -66,6 +66,10 @@ immutable halves rather than duplicating their packed bits.
 the mask bounds. Exact outer edges and rays with no relevant plane
 intersection return `NO_SPECIAL_RESULT`, conservatively preserving vanilla.
 
+`RayProfileRegistry` resolves the singleton oak-door profile by block state.
+It returns no profile for every unsupported block, so the future traversal can
+immediately leave that block to vanilla without registry maps or string lookups.
+
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
 segment, and `Plane.intersect` returns no result for parallel or out-of-range
@@ -114,9 +118,7 @@ implemented yet.
 
 ## Current limitations
 
-- No registry, traversal, or gameplay integration exists yet.
-- No manually defined oak-door opening mask exists yet.
-- No manually defined oak-door opening mask exists yet.
+- No traversal or gameplay integration exists yet.
 - Door geometry currently uses a representative mid-plane, not full slab
   thickness or texture-derived detail.
 - The door transform validates a single oak-door state; pairing/validating the

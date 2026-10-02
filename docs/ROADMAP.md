@@ -21,22 +21,23 @@ projectiles and vision, and be validated before the next begins.
   an opaque lower half and four upper-half windows.
 - Immutable 16-by-32 logical door-mask composition.
 - `OakDoorRayProfile`, with all-facing and open/hinge mask-sampling tests.
+- Minimal `RayProfileRegistry`, with oak-door-only resolution and vanilla
+  fallback for unsupported blocks.
 
 ## Planned sequence
 
 1. Pin Fabric Loom from `1.18-SNAPSHOT` to stable `1.18.2`.
-2. Add a minimal internal `RayProfileRegistry`.
-3. Implement reusable ray traversal that can skip an `OPEN` supported surface
+2. Implement reusable ray traversal that can skip an `OPEN` supported surface
    and continue to later vanilla collisions.
-4. Integrate that traversal with vanilla arrow collision.
-5. Integrate the same profile geometry with common mob line of sight.
-6. Validate an end-to-end skeleton scenario: it sees a player through a hole,
+3. Integrate that traversal with vanilla arrow collision.
+4. Integrate the same profile geometry with common mob line of sight.
+5. Validate an end-to-end skeleton scenario: it sees a player through a hole,
     shoots, and the arrow passes through the same hole.
-7. Add remaining vanilla doors.
-8. Add trapdoors.
-9. Introduce data-driven profiles.
-10. Add an external registration API for mod compatibility.
-11. Only then investigate resource-pack/model-derived geometry.
+6. Add remaining vanilla doors.
+7. Add trapdoors.
+8. Introduce data-driven profiles.
+9. Add an external registration API for mod compatibility.
+10. Only then investigate resource-pack/model-derived geometry.
 
 ## Scope guardrails
 
