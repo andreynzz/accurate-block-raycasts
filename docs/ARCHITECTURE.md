@@ -51,9 +51,10 @@ not traverse the world or select unsupported blocks.
 packed bits. It is intended to describe the logical blocking pattern once for
 each supported profile, not once per world-facing direction.
 
-Door masks are manually encoded server-side from a one-time inspection of the
-vanilla 26.3 appearance. The implementation contains only opening geometry,
-not texture data, and never reads client assets during gameplay.
+Door and trapdoor masks are manually encoded server-side from a one-time
+inspection of the vanilla 26.3 appearance. The implementation contains only
+opening geometry, not texture data, and never reads client assets during
+gameplay.
 
 `DoorMask` presents those lower and upper `PixelMask` instances as one
 continuous 16-by-32 surface, with rows indexed bottom-to-top. It retains the
@@ -64,15 +65,19 @@ immutable halves rather than duplicating their packed bits.
 the mask bounds. Exact outer edges and rays with no relevant plane
 intersection return `NO_SPECIAL_RESULT`, conservatively preserving vanilla.
 
-`RayProfileRegistry` resolves only manually verified profiles: oak, acacia,
-bamboo, cherry, jungle, poplar, iron, and all copper oxidation/wax variants.
-Visually opaque doors receive no profile because vanilla already blocks their
-rays correctly. Every other unsupported block also remains on the vanilla path.
+`RayProfileRegistry` resolves only manually verified profiles. Door support
+includes oak, acacia, bamboo, cherry, jungle, poplar, iron, and all copper
+oxidation/wax variants. Trapdoor support includes acacia, bamboo, cherry,
+crimson, jungle, mangrove, oak, poplar, warped, iron, and all copper
+oxidation/wax variants. Birch, dark oak, pale oak, and spruce trapdoors are
+visually opaque and receive no profile, so they and every other unsupported
+block remain on the vanilla path.
 
 `PerforatedRaycaster` owns the shared retry loop. It calls the gameplay
 adapter's vanilla trace, returns its result unchanged unless the resolved
-profile reports `OPEN`, and then starts the next trace just beyond that door
-voxel. Thus one opening cannot discard a later vanilla block collision.
+profile reports `OPEN`, and then starts the next trace just beyond that
+supported voxel. Thus one opening cannot discard a later vanilla block
+collision.
 
 For arrows, a server-side Mixin redirects only the `Level.clipIncludingBorder`
 call in `AbstractArrow.tick`. `ArrowBlockRaycaster` feeds that call through the
@@ -86,7 +91,7 @@ For common mob vision, a second server-side Mixin redirects the sole
 `LineOfSightRaycaster` reuses `PerforatedRaycaster` and retains the original
 block, fluid, and collision-context settings for each retried trace. Thus the
 normal `LivingEntity.hasLineOfSight(Entity)` path and its callers use the same
-oak-door geometry as arrows without changing unrelated level clipping.
+supported-profile geometry as arrows without changing unrelated level clipping.
 
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
@@ -119,6 +124,24 @@ surface based on ray direction. `DoorLocalCoordinates` stores `u`/`v`, and
 `DoorIntersection` preserves the segment parameter, world point, and mapped
 coordinates.
 
+## Canonical trapdoor coordinates
+
+`TrapdoorTransform` maps a vanilla `TrapDoorBlock` state, block position, and
+world-space point or ray intersection into one 16-by-16 local surface. It
+reads the real `FACING`, `OPEN`, and `HALF` state properties.
+
+For a closed trapdoor, the canonical surface is horizontal: `u` follows world
+X and `v` follows world Z. `HALF` selects the representative mid-plane of the
+top or bottom 3/16-block slab. For an open trapdoor, the surface is vertical:
+its normal faces opposite `FACING`, its width follows `FACING` clockwise, and
+`v` follows world Y. The transform therefore stores one mask per block type,
+not copies for horizontal facings or open/closed states.
+
+`TrapdoorRayProfile` samples that transform with the same `PixelMask` type as
+doors. It returns `OPEN` or `SOLID` only for an in-bounds plane crossing; a
+parallel ray, an outer edge, or no relevant crossing conservatively delegates
+to vanilla.
+
 ## Verified vanilla call paths
 
 The Minecraft 26.3 source was inspected before planning integration:
@@ -138,3 +161,6 @@ server GameTests.
   thickness or texture-derived detail.
 - The door transform validates a single door state; pairing/validating the
   neighboring door half is left to the later profile/traversal layer.
+- Trapdoor geometry also uses a representative slab mid-plane. Its masks are
+  manually maintained static data; resource-pack/model-derived geometry is not
+  supported.
