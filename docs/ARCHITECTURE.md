@@ -38,11 +38,56 @@ projectile / mob vision
 Gameplay integration and Mixins belong at the edge of this flow. Geometry and
 profiles must not know about arrows, mobs, networking, or client rendering.
 
+`RayProfile` is the internal contract for one explicitly supported block type.
+It evaluates a block state, its world position, and a finite shared `Ray`, then
+returns `OPEN`, `SOLID`, or `NO_SPECIAL_RESULT`. `OPEN` permits a future
+traversal to continue past the supported surface; `SOLID` preserves blocking;
+and `NO_SPECIAL_RESULT` delegates fully to vanilla. The profile itself does
+not traverse the world or select unsupported blocks.
+
 ## Geometry foundation
 
 `PixelMask` is an immutable, compact 16-by-16 solid/passable mask backed by
 packed bits. It is intended to describe the logical blocking pattern once for
 each supported profile, not once per world-facing direction.
+
+For the initial oak-door profile, the masks are manually encoded server-side
+from a one-time inspection of the vanilla 26.3 appearance: the lower half is
+solid and the upper half has four 4-by-3-pixel windows. The implementation
+contains only this opening geometry, not texture data, and never reads client
+assets during gameplay.
+
+`DoorMask` presents those lower and upper `PixelMask` instances as one
+continuous 16-by-32 surface, with rows indexed bottom-to-top. It retains the
+immutable halves rather than duplicating their packed bits.
+
+`OakDoorRayProfile` combines this surface with `DoorTransform`. It returns
+`OPEN` or `SOLID` only when the finite ray crosses the door mid-plane within
+the mask bounds. Exact outer edges and rays with no relevant plane
+intersection return `NO_SPECIAL_RESULT`, conservatively preserving vanilla.
+
+`RayProfileRegistry` resolves the singleton oak-door profile by block state.
+It returns no profile for every unsupported block, so the future traversal can
+immediately leave that block to vanilla without registry maps or string lookups.
+
+`PerforatedRaycaster` owns the shared retry loop. It calls the gameplay
+adapter's vanilla trace, returns its result unchanged unless the resolved
+profile reports `OPEN`, and then starts the next trace just beyond that door
+voxel. Thus one opening cannot discard a later vanilla block collision.
+
+For arrows, a server-side Mixin redirects only the `Level.clipIncludingBorder`
+call in `AbstractArrow.tick`. `ArrowBlockRaycaster` feeds that call through the
+shared traversal and returns the later vanilla `BlockHitResult` (or a vanilla
+miss). `AbstractArrow.stepMoveAndHit` then retains its normal entity ordering,
+damage, deflection, and block-impact behavior. The client retains vanilla
+prediction until authoritative server updates arrive.
+
+For common mob vision, a second server-side Mixin redirects the sole
+`Level.clip` call in the four-argument `LivingEntity.hasLineOfSight` overload.
+`LineOfSightRaycaster` reuses `PerforatedRaycaster` and retains the original
+block, fluid, and collision-context settings for each retried trace. Thus the
+normal `LivingEntity.hasLineOfSight(Entity)` path and its callers use the same
+oak-door geometry as arrows without changing unrelated level clipping.
 
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
@@ -92,10 +137,8 @@ implemented yet.
 
 ## Current limitations
 
-- No `RayProfile`, registry, traversal, or gameplay integration exists yet.
-- No manually defined oak-door opening mask exists yet.
+- No end-to-end gameplay scenario has been tested in a running Minecraft world.
 - Door geometry currently uses a representative mid-plane, not full slab
   thickness or texture-derived detail.
 - The door transform validates a single oak-door state; pairing/validating the
   neighboring door half is left to the later profile/traversal layer.
-- No gameplay behavior has been tested in a running Minecraft instance.

@@ -14,30 +14,30 @@ projectiles and vision, and be validated before the next begins.
 - Vanilla projectile and common line-of-sight call-path investigation.
 - `DoorTransform`, `DoorLocalCoordinates`, and `DoorIntersection` on
   `feature/door-transform`, including all-facing, open/hinge, and door-half
-  transform tests. This feature remains pending integration into `develop`.
+  transform tests, integrated into `develop`.
+- Internal `RayProfile` contract and explicit `OPEN`, `SOLID`, and
+  `NO_SPECIAL_RESULT` result semantics.
+- Manually verified server-side opening masks for the vanilla 26.3 oak door:
+  an opaque lower half and four upper-half windows.
+- Immutable 16-by-32 logical door-mask composition.
+- `OakDoorRayProfile`, with all-facing and open/hinge mask-sampling tests.
+- Minimal `RayProfileRegistry`, with oak-door-only resolution and vanilla
+  fallback for unsupported blocks.
+- Shared block traversal that skips an `OPEN` oak-door voxel and continues to
+  the next vanilla hit.
+- Server-side vanilla-arrow block-trace integration.
+- Server-side common living-entity line-of-sight integration.
 
 ## Planned sequence
 
 1. Pin Fabric Loom from `1.18-SNAPSHOT` to stable `1.18.2`.
-2. Introduce internal `RayProfile` result semantics such as `OPEN`, `SOLID`,
-   and `NO_SPECIAL_RESULT`.
-3. Inspect Minecraft 26.3 oak-door textures and encode the real
-   transparent/opaque pattern as server-side gameplay data, without copying
-   Mojang assets.
-4. Support a logical 16-by-32 full-door mask or an equivalent composition.
-5. Implement `OakDoorRayProfile` using `DoorTransform` and `PixelMask`.
-6. Add a minimal internal `RayProfileRegistry`.
-7. Implement reusable ray traversal that can skip an `OPEN` supported surface
-   and continue to later vanilla collisions.
-8. Integrate that traversal with vanilla arrow collision.
-9. Integrate the same profile geometry with common mob line of sight.
-10. Validate an end-to-end skeleton scenario: it sees a player through a hole,
+2. Validate an end-to-end skeleton scenario: it sees a player through a hole,
     shoots, and the arrow passes through the same hole.
-11. Add remaining vanilla doors.
-12. Add trapdoors.
-13. Introduce data-driven profiles.
-14. Add an external registration API for mod compatibility.
-15. Only then investigate resource-pack/model-derived geometry.
+3. Add remaining vanilla doors.
+4. Add trapdoors.
+5. Introduce data-driven profiles.
+6. Add an external registration API for mod compatibility.
+7. Only then investigate resource-pack/model-derived geometry.
 
 ## Scope guardrails
 
