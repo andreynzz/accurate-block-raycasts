@@ -57,6 +57,10 @@ solid and the upper half has four 4-by-3-pixel windows. The implementation
 contains only this opening geometry, not texture data, and never reads client
 assets during gameplay.
 
+`DoorMask` presents those lower and upper `PixelMask` instances as one
+continuous 16-by-32 surface, with rows indexed bottom-to-top. It retains the
+immutable halves rather than duplicating their packed bits.
+
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
 segment, and `Plane.intersect` returns no result for parallel or out-of-range

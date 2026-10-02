@@ -1,5 +1,6 @@
 package io.github.accurateblockraycasts.raycast;
 
+import io.github.accurateblockraycasts.geometry.DoorMask;
 import io.github.accurateblockraycasts.geometry.PixelMask;
 
 /**
@@ -33,6 +34,7 @@ public final class OakDoorMasks {
         SOLID,
         SOLID
     );
+    private static final DoorMask FULL_DOOR = DoorMask.fromHalves(LOWER_HALF, UPPER_HALF);
 
     private OakDoorMasks() {
     }
@@ -43,6 +45,10 @@ public final class OakDoorMasks {
 
     public static PixelMask upperHalf() {
         return UPPER_HALF;
+    }
+
+    public static DoorMask fullDoor() {
+        return FULL_DOOR;
     }
 
     private static PixelMask fromRows(String... rows) {

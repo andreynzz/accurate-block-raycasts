@@ -3,6 +3,7 @@ package io.github.accurateblockraycasts.raycast;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.accurateblockraycasts.geometry.DoorMask;
 import io.github.accurateblockraycasts.geometry.PixelMask;
 import org.junit.jupiter.api.Test;
 
@@ -39,6 +40,16 @@ class OakDoorMasksTest {
         assertFalse(upperHalf.isPassable(13, 5));
         assertFalse(upperHalf.isPassable(3, 4));
         assertFalse(upperHalf.isPassable(3, 8));
+    }
+
+    @Test
+    void fullDoorUsesTheSameContinuousBottomToTopCoordinates() {
+        DoorMask fullDoor = OakDoorMasks.fullDoor();
+
+        assertTrue(fullDoor.isSolid(3, 15));
+        assertTrue(fullDoor.isPassable(3, 21));
+        assertTrue(fullDoor.isPassable(12, 28));
+        assertTrue(fullDoor.isSolid(3, 24));
     }
 
     private static boolean isWindow(int column, int row) {
