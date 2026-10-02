@@ -27,17 +27,19 @@ projectiles and vision, and be validated before the next begins.
   the next vanilla hit.
 - Server-side vanilla-arrow block-trace integration.
 - Server-side common living-entity line-of-sight integration.
+- Fabric Loom pinned to stable `1.18.2`.
+- Server GameTests for an arrow traversing an oak-door opening to a later block
+  and skeleton line of sight through that same opening.
+- Manual development-client validation: player and skeleton arrows traversed an
+  opening, and a skeleton could see a player behind the door.
 
 ## Planned sequence
 
-1. Pin Fabric Loom from `1.18-SNAPSHOT` to stable `1.18.2`.
-2. Validate an end-to-end skeleton scenario: it sees a player through a hole,
-    shoots, and the arrow passes through the same hole.
-3. Add remaining vanilla doors.
-4. Add trapdoors.
-5. Introduce data-driven profiles.
-6. Add an external registration API for mod compatibility.
-7. Only then investigate resource-pack/model-derived geometry.
+1. Add remaining vanilla doors.
+2. Add trapdoors.
+3. Introduce data-driven profiles.
+4. Add an external registration API for mod compatibility.
+5. Only then investigate resource-pack/model-derived geometry.
 
 ## Scope guardrails
 
