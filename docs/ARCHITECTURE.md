@@ -82,6 +82,13 @@ miss). `AbstractArrow.stepMoveAndHit` then retains its normal entity ordering,
 damage, deflection, and block-impact behavior. The client retains vanilla
 prediction until authoritative server updates arrive.
 
+For common mob vision, a second server-side Mixin redirects the sole
+`Level.clip` call in the four-argument `LivingEntity.hasLineOfSight` overload.
+`LineOfSightRaycaster` reuses `PerforatedRaycaster` and retains the original
+block, fluid, and collision-context settings for each retried trace. Thus the
+normal `LivingEntity.hasLineOfSight(Entity)` path and its callers use the same
+oak-door geometry as arrows without changing unrelated level clipping.
+
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
 segment, and `Plane.intersect` returns no result for parallel or out-of-range
@@ -130,9 +137,8 @@ implemented yet.
 
 ## Current limitations
 
-- Common mob line-of-sight integration is not implemented yet.
+- No end-to-end gameplay scenario has been tested in a running Minecraft world.
 - Door geometry currently uses a representative mid-plane, not full slab
   thickness or texture-derived detail.
 - The door transform validates a single oak-door state; pairing/validating the
   neighboring door half is left to the later profile/traversal layer.
-- No gameplay behavior has been tested in a running Minecraft instance.

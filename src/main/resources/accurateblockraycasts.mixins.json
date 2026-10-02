@@ -2,7 +2,9 @@
   "required": true,
   "package": "io.github.accurateblockraycasts.mixin",
   "mixins": [
-    "AbstractArrowMixin"
+    "AbstractArrowMixin",
+    "ClipContextAccessor",
+    "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
