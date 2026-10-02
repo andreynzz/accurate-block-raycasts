@@ -3,6 +3,8 @@ package io.github.accurateblockraycasts.generator;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
 import javax.imageio.ImageIO;
@@ -19,11 +21,22 @@ public final class DoorProfileGenerator {
 
     public static void main(String[] arguments) throws IOException {
         Arguments args = Arguments.parse(arguments);
-        ResourcePackDoorTextures.Textures textures = args.pack() == null
-            ? new ResourcePackDoorTextures.Textures(args.bottom(), args.top())
-            : ResourcePackDoorTextures.find(args.pack(), args.block());
-        List<String> lower = toRows(read(textures.bottom()));
-        List<String> upper = toRows(read(textures.top()));
+        List<String> lower;
+        List<String> upper;
+        if (args.pack() == null) {
+            lower = toRows(read(args.bottom()));
+            upper = toRows(read(args.top()));
+        } else if (Files.isDirectory(args.pack())) {
+            ResourcePackDoorTextures.Textures textures = ResourcePackDoorTextures.find(args.pack(), args.block());
+            lower = toRows(read(textures.bottom()));
+            upper = toRows(read(textures.top()));
+        } else {
+            try (FileSystem zip = FileSystems.newFileSystem(args.pack())) {
+                ResourcePackDoorTextures.Textures textures = ResourcePackDoorTextures.find(zip.getPath("/"), args.block());
+                lower = toRows(read(textures.bottom()));
+                upper = toRows(read(textures.top()));
+            }
+        }
         Path parent = args.output().getParent();
         if (parent != null) {
             Files.createDirectories(parent);
