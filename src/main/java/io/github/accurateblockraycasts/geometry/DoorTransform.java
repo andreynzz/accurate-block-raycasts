@@ -4,15 +4,13 @@ import java.util.Objects;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
 /**
- * Maps the physical plane of one {@code minecraft:oak_door} into a single
- * canonical surface.
+ * Maps the physical plane of one vanilla door into a single canonical surface.
  *
  * <p>The canonical front is the face opposite {@link DoorBlock#FACING} when
  * the door is closed. Looking at that front, {@code u = 0} is the left edge
@@ -41,12 +39,12 @@ public final class DoorTransform {
         this.lowerBlockY = position.getY() - (half == DoubleBlockHalf.UPPER ? 1 : 0);
     }
 
-    /** Creates a transform for one half of a vanilla oak door. */
-    public static DoorTransform forOakDoor(BlockState state, BlockPos position) {
+    /** Creates a transform for one half of a vanilla {@link DoorBlock}. */
+    public static DoorTransform forDoor(BlockState state, BlockPos position) {
         Objects.requireNonNull(state, "state");
         Objects.requireNonNull(position, "position");
-        if (!state.is(Blocks.OAK_DOOR)) {
-            throw new IllegalArgumentException("state must be minecraft:oak_door");
+        if (!(state.getBlock() instanceof DoorBlock)) {
+            throw new IllegalArgumentException("state must belong to a DoorBlock");
         }
 
         Direction facing = state.getValue(DoorBlock.FACING);

@@ -1,7 +1,7 @@
 package io.github.accurateblockraycasts.mixin;
 
 import io.github.accurateblockraycasts.raycast.ArrowBlockRaycaster;
-import io.github.accurateblockraycasts.raycast.OakDoorRayProfile;
+import io.github.accurateblockraycasts.raycast.RayProfileRegistry;
 import io.github.accurateblockraycasts.geometry.Vec3;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.level.ClipContext;
@@ -29,7 +29,7 @@ abstract class AbstractArrowMixin {
     )
     private BlockState accurateBlockRaycasts$skipOpeningForInGroundCheck(Level level, net.minecraft.core.BlockPos position) {
         BlockState state = level.getBlockState(position);
-        if (!level.isClientSide() && OakDoorRayProfile.INSTANCE.isPassableAt(
+        if (!level.isClientSide() && RayProfileRegistry.INSTANCE.isPassableAt(
             state,
             position,
             new Vec3(((AbstractArrow) (Object) this).getX(), ((AbstractArrow) (Object) this).getY(), ((AbstractArrow) (Object) this).getZ())
