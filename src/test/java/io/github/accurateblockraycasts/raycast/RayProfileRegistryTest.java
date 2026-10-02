@@ -36,9 +36,17 @@ class RayProfileRegistryTest {
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.ACACIA_DOOR.defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BAMBOO_DOOR.defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.CHERRY_DOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_DOOR.weathering().unaffected().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_DOOR.weathering().exposed().defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.IRON_DOOR.defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.JUNGLE_DOOR.defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.POPLAR_DOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_DOOR.weathering().weathered().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_DOOR.weathering().oxidized().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_DOOR.waxed().unaffected().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_DOOR.waxed().exposed().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_DOOR.waxed().weathered().defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.COPPER_DOOR.waxed().oxidized().defaultBlockState()));
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BIRCH_DOOR.defaultBlockState()));
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.CRIMSON_DOOR.defaultBlockState()));
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.SPRUCE_DOOR.defaultBlockState()));
