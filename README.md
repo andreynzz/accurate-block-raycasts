@@ -34,10 +34,32 @@ pack behavior, or block/model texture loading at runtime.
 ## Development requirements
 
 - Minecraft Java Edition 26.3
-- Java 25
+- A JDK 25 or newer (the Fabric Loom version used by this project cannot run
+  on Java 21 or earlier)
 - The Gradle wrapper included in this repository
 
 ## Build and verify
+
+Gradle itself must be launched with JDK 25 or newer; configuring a Java
+toolchain in `build.gradle` is not enough because Loom is loaded before that
+configuration can take effect. Confirm the active Java version first:
+
+```powershell
+java -version
+```
+
+The output must report version `25` or newer. If it does not, install a JDK 25
+distribution and point the current PowerShell session at it before invoking
+Gradle (replace the example path with the installed JDK directory):
+
+```powershell
+$env:JAVA_HOME = 'C:\Program Files\Eclipse Adoptium\jdk-25'
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+java -version
+```
+
+For IntelliJ IDEA, set **Settings | Build, Execution, Deployment | Build
+Tools | Gradle | Gradle JVM** to the same JDK 25 installation.
 
 From the repository root on Windows:
 
