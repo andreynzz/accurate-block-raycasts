@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class PixelMaskTest {
@@ -36,5 +37,19 @@ class PixelMaskTest {
         PixelMask mask = PixelMask.fromSolidPixels(pixels);
         pixels[0][0] = true;
         assertTrue(mask.isPassable(0, 0));
+    }
+
+    @Test
+    void buildsMasksFromBottomToTopTextRows() {
+        List<String> rows = java.util.stream.Stream.concat(
+            java.util.stream.Stream.of("#..............."),
+            java.util.stream.Stream.generate(() -> "................").limit(15)
+        ).toList();
+
+        PixelMask mask = PixelMask.fromRows(rows);
+
+        assertTrue(mask.isSolid(0, 0));
+        assertTrue(mask.isPassable(0, 1));
+        assertThrows(IllegalArgumentException.class, () -> PixelMask.fromRows(rows.subList(0, 15)));
     }
 }

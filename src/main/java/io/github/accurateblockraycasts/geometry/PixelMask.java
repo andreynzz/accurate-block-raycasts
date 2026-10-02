@@ -46,6 +46,33 @@ public final class PixelMask {
         return new PixelMask(bits);
     }
 
+    /**
+     * Builds a mask from sixteen bottom-to-top rows, using {@code '#'} for a
+     * solid pixel and {@code '.'} for an opening.
+     */
+    public static PixelMask fromRows(java.util.List<String> rows) {
+        Objects.requireNonNull(rows, "rows");
+        if (rows.size() != SIZE) {
+            throw new IllegalArgumentException("expected exactly 16 rows");
+        }
+
+        boolean[][] solidPixels = new boolean[SIZE][SIZE];
+        for (int row = 0; row < SIZE; row++) {
+            String pattern = Objects.requireNonNull(rows.get(row), "mask row");
+            if (pattern.length() != SIZE) {
+                throw new IllegalArgumentException("each mask row must contain exactly 16 pixels");
+            }
+            for (int column = 0; column < SIZE; column++) {
+                solidPixels[row][column] = switch (pattern.charAt(column)) {
+                    case '#' -> true;
+                    case '.' -> false;
+                    default -> throw new IllegalArgumentException("mask rows may only contain '#' or '.'");
+                };
+            }
+        }
+        return fromSolidPixels(solidPixels);
+    }
+
     public boolean isSolid(int column, int row) {
         int index = index(column, row);
         return (solidBits[index >>> 6] & (1L << (index & 63))) != 0;

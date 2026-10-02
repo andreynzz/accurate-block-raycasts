@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.accurateblockraycasts.geometry.Vec3;
+import java.util.Map;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.Bootstrap;
@@ -90,5 +91,16 @@ class RayProfileRegistryTest {
 
         assertTrue(RayProfileRegistry.INSTANCE.isPassableAt(Blocks.OAK_DOOR.defaultBlockState(), position, opening));
         assertFalse(RayProfileRegistry.INSTANCE.isPassableAt(Blocks.STONE.defaultBlockState(), position, opening));
+    }
+
+    @Test
+    void dataProfilesOverrideTheBuiltInProfileForTheirBlock() {
+        RayProfile override = (state, position, ray) -> RayProfileResult.SOLID;
+        RayProfileRegistry.INSTANCE.replaceDataProfiles(Map.of(Blocks.OAK_DOOR, override));
+        try {
+            assertSame(override, RayProfileRegistry.INSTANCE.resolve(Blocks.OAK_DOOR.defaultBlockState()));
+        } finally {
+            RayProfileRegistry.INSTANCE.replaceDataProfiles(Map.of());
+        }
     }
 }

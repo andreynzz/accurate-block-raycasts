@@ -49,14 +49,22 @@ projectiles and vision, and be validated before the next begins.
   arrow traversal through an opening to a later block, solid-pixel blocking,
   and skeleton vision. The Java 25 GameTest run completed successfully with
   all 21 required gameplay tests passing.
+- Server-data profile loading: a reload listener reads opt-in door and
+  trapdoor masks from `data/<namespace>/accurateblockraycasts/ray_profiles`,
+  validates their block type and mask shape, and atomically installs valid
+  profiles. Data profiles may override built-in profiles; invalid files retain
+  the safe vanilla/built-in fallback.
+- The Java 25 unit suite passes after the data-profile implementation.
+- Direct parser tests cover a valid profile and rejection of invalid block
+  types and malformed masks.
+- Two server GameTests load a datapack-defined `minecraft:birch_door` profile
+  and verify both arrow traversal to a later block and skeleton line of sight;
+  the full Java 25 GameTest suite passes with 23 required tests.
 
 ## Planned sequence
 
-1. Run the full unit and GameTest suites with Java 25, including the new
-   trapdoor coverage.
-2. Introduce data-driven profiles.
-3. Add an external registration API for mod compatibility.
-4. Only then investigate resource-pack/model-derived geometry.
+1. Add an external registration API for mod compatibility.
+2. Only then investigate resource-pack/model-derived geometry.
 
 ## Scope guardrails
 
