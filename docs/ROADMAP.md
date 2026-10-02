@@ -47,9 +47,8 @@ projectiles and vision, and be validated before the next begins.
   vanilla fallback because they are visually opaque.
 - Nine server GameTests for representative wood, iron, and copper trapdoors:
   arrow traversal through an opening to a later block, solid-pixel blocking,
-  and skeleton vision. These tests are defined but have not yet been run in
-  this workspace because its available JDK is 17 and the project requires
-  Java 25.
+  and skeleton vision. The Java 25 GameTest run completed successfully with
+  all 21 required gameplay tests passing.
 
 ## Planned sequence
 
