@@ -19,8 +19,11 @@ public final class DoorProfileGenerator {
 
     public static void main(String[] arguments) throws IOException {
         Arguments args = Arguments.parse(arguments);
-        List<String> lower = toRows(read(args.bottom()));
-        List<String> upper = toRows(read(args.top()));
+        ResourcePackDoorTextures.Textures textures = args.pack() == null
+            ? new ResourcePackDoorTextures.Textures(args.bottom(), args.top())
+            : ResourcePackDoorTextures.find(args.pack(), args.block());
+        List<String> lower = toRows(read(textures.bottom()));
+        List<String> upper = toRows(read(textures.top()));
         Path parent = args.output().getParent();
         if (parent != null) {
             Files.createDirectories(parent);
@@ -61,16 +64,14 @@ public final class DoorProfileGenerator {
         return "[\n    \"" + String.join("\",\n    \"", rows) + "\"\n  ]";
     }
 
-    private record Arguments(String block, Path bottom, Path top, Path output) {
+    private record Arguments(String block, Path bottom, Path top, Path pack, Path output) {
         private static Arguments parse(String[] arguments) {
-            if (arguments.length != 8) {
-                throw usage();
-            }
             String block = value(arguments, "--block");
-            Path bottom = Path.of(value(arguments, "--bottom"));
-            Path top = Path.of(value(arguments, "--top"));
+            String pack = optionalValue(arguments, "--pack");
+            Path bottom = pack == null ? Path.of(value(arguments, "--bottom")) : null;
+            Path top = pack == null ? Path.of(value(arguments, "--top")) : null;
             Path output = Path.of(value(arguments, "--output"));
-            return new Arguments(block, bottom, top, output);
+            return new Arguments(block, bottom, top, pack == null ? null : Path.of(pack), output);
         }
 
         private static String value(String[] arguments, String option) {
@@ -82,8 +83,13 @@ public final class DoorProfileGenerator {
             throw usage();
         }
 
+        private static String optionalValue(String[] arguments, String option) {
+            for (int index = 0; index < arguments.length - 1; index += 2) if (arguments[index].equals(option)) return arguments[index + 1];
+            return null;
+        }
+
         private static IllegalArgumentException usage() {
-            return new IllegalArgumentException("usage: --block <namespace:block> --bottom <bottom.png> --top <top.png> --output <profile.json>");
+            return new IllegalArgumentException("usage: --block <namespace:block> (--bottom <bottom.png> --top <top.png> | --pack <pack-dir>) --output <profile.json>");
         }
     }
 }
