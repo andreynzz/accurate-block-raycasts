@@ -75,6 +75,13 @@ adapter's vanilla trace, returns its result unchanged unless the resolved
 profile reports `OPEN`, and then starts the next trace just beyond that door
 voxel. Thus one opening cannot discard a later vanilla block collision.
 
+For arrows, a server-side Mixin redirects only the `Level.clipIncludingBorder`
+call in `AbstractArrow.tick`. `ArrowBlockRaycaster` feeds that call through the
+shared traversal and returns the later vanilla `BlockHitResult` (or a vanilla
+miss). `AbstractArrow.stepMoveAndHit` then retains its normal entity ordering,
+damage, deflection, and block-impact behavior. The client retains vanilla
+prediction until authoritative server updates arrive.
+
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
 segment, and `Plane.intersect` returns no result for parallel or out-of-range
@@ -123,7 +130,7 @@ implemented yet.
 
 ## Current limitations
 
-- No gameplay integration exists yet.
+- Common mob line-of-sight integration is not implemented yet.
 - Door geometry currently uses a representative mid-plane, not full slab
   thickness or texture-derived detail.
 - The door transform validates a single oak-door state; pairing/validating the

@@ -25,19 +25,19 @@ projectiles and vision, and be validated before the next begins.
   fallback for unsupported blocks.
 - Shared block traversal that skips an `OPEN` oak-door voxel and continues to
   the next vanilla hit.
+- Server-side vanilla-arrow block-trace integration.
 
 ## Planned sequence
 
 1. Pin Fabric Loom from `1.18-SNAPSHOT` to stable `1.18.2`.
-2. Integrate that traversal with vanilla arrow collision.
-3. Integrate the same profile geometry with common mob line of sight.
-4. Validate an end-to-end skeleton scenario: it sees a player through a hole,
+2. Integrate the same profile geometry with common mob line of sight.
+3. Validate an end-to-end skeleton scenario: it sees a player through a hole,
     shoots, and the arrow passes through the same hole.
-5. Add remaining vanilla doors.
-6. Add trapdoors.
-7. Introduce data-driven profiles.
-8. Add an external registration API for mod compatibility.
-9. Only then investigate resource-pack/model-derived geometry.
+4. Add remaining vanilla doors.
+5. Add trapdoors.
+6. Introduce data-driven profiles.
+7. Add an external registration API for mod compatibility.
+8. Only then investigate resource-pack/model-derived geometry.
 
 ## Scope guardrails
 
