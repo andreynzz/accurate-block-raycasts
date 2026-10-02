@@ -70,6 +70,11 @@ intersection return `NO_SPECIAL_RESULT`, conservatively preserving vanilla.
 It returns no profile for every unsupported block, so the future traversal can
 immediately leave that block to vanilla without registry maps or string lookups.
 
+`PerforatedRaycaster` owns the shared retry loop. It calls the gameplay
+adapter's vanilla trace, returns its result unchanged unless the resolved
+profile reports `OPEN`, and then starts the next trace just beyond that door
+voxel. Thus one opening cannot discard a later vanilla block collision.
+
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
 segment, and `Plane.intersect` returns no result for parallel or out-of-range
@@ -118,7 +123,7 @@ implemented yet.
 
 ## Current limitations
 
-- No traversal or gameplay integration exists yet.
+- No gameplay integration exists yet.
 - Door geometry currently uses a representative mid-plane, not full slab
   thickness or texture-derived detail.
 - The door transform validates a single oak-door state; pairing/validating the
