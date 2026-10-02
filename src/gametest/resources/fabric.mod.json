@@ -6,7 +6,8 @@
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [
-      "io.github.accurateblockraycasts.gametest.OakDoorGameplayGameTest"
+      "io.github.accurateblockraycasts.gametest.OakDoorGameplayGameTest",
+      "io.github.accurateblockraycasts.gametest.TrapdoorGameplayGameTest"
     ]
   },
   "depends": {
