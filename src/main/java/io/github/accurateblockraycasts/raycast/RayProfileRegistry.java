@@ -13,6 +13,8 @@ public final class RayProfileRegistry {
     private static final RayProfile ACACIA_DOOR = new DoorRayProfile(Blocks.ACACIA_DOOR, OtherWoodDoorMasks.acacia());
     private static final RayProfile BAMBOO_DOOR = new DoorRayProfile(Blocks.BAMBOO_DOOR, OtherWoodDoorMasks.bamboo());
     private static final RayProfile CHERRY_DOOR = new DoorRayProfile(Blocks.CHERRY_DOOR, OtherWoodDoorMasks.cherry());
+    // Vanilla's iron door has the same two-by-two upper-window layout as oak.
+    private static final RayProfile IRON_DOOR = new DoorRayProfile(Blocks.IRON_DOOR, OakDoorMasks.fullDoor());
     private static final RayProfile JUNGLE_DOOR = new DoorRayProfile(Blocks.JUNGLE_DOOR, OtherWoodDoorMasks.jungle());
     private static final RayProfile POPLAR_DOOR = new DoorRayProfile(Blocks.POPLAR_DOOR, OtherWoodDoorMasks.poplar());
 
@@ -36,6 +38,9 @@ public final class RayProfileRegistry {
         }
         if (state.is(Blocks.CHERRY_DOOR)) {
             return CHERRY_DOOR;
+        }
+        if (state.is(Blocks.IRON_DOOR)) {
+            return IRON_DOOR;
         }
         if (state.is(Blocks.JUNGLE_DOOR)) {
             return JUNGLE_DOOR;

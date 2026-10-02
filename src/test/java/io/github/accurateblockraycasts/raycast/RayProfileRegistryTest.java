@@ -36,6 +36,7 @@ class RayProfileRegistryTest {
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.ACACIA_DOOR.defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BAMBOO_DOOR.defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.CHERRY_DOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.IRON_DOOR.defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.JUNGLE_DOOR.defaultBlockState()));
         assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.POPLAR_DOOR.defaultBlockState()));
         assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BIRCH_DOOR.defaultBlockState()));
