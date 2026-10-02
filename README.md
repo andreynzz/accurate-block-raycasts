@@ -122,6 +122,10 @@ Copy the generated file to
 datapack. This is an offline development tool: gameplay never reads client
 resource packs or models.
 
+For packs following the vanilla door-model convention, supply `--pack` instead
+of the two PNG paths. The generator resolves `block/<door>_bottom_left`, its
+parents, and its `bottom`/`top` texture slots inside that directory.
+
 ## CI and releases
 
 GitHub Actions validates every push to `develop`, every pull request targeting
