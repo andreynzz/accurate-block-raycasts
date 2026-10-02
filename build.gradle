@@ -53,6 +53,13 @@ tasks.withType(Test).configureEach {
 	useJUnitPlatform()
 }
 
+tasks.register('generateDoorRayProfile', JavaExec) {
+	group = 'tools'
+	description = 'Generates a door ray-profile JSON file from two transparent 16x16 PNG textures.'
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'io.github.accurateblockraycasts.generator.DoorProfileGenerator'
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(25)

@@ -106,6 +106,22 @@ paths as built-in profiles. A datapack profile for that block takes precedence;
 duplicate external registrations fail explicitly rather than depending on mod
 load order.
 
+## Offline door-profile generator
+
+`generateDoorRayProfile` converts two transparent 16-by-16 door PNGs into a
+server datapack JSON file. Fully transparent pixels become openings (`.`); all
+other pixels, including partially transparent ones, are conservatively solid
+(`#`). The tool reads image rows into the required bottom-to-top mask order.
+
+```powershell
+.\gradlew.bat generateDoorRayProfile --args="--block example:perforated_door --bottom path\to\bottom.png --top path\to\top.png --output path\to\ray_profile.json"
+```
+
+Copy the generated file to
+`data/<namespace>/accurateblockraycasts/ray_profiles/<name>.json` in a server
+datapack. This is an offline development tool: gameplay never reads client
+resource packs or models.
+
 ## CI and releases
 
 GitHub Actions validates every push to `develop`, every pull request targeting
