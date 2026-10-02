@@ -38,6 +38,13 @@ projectile / mob vision
 Gameplay integration and Mixins belong at the edge of this flow. Geometry and
 profiles must not know about arrows, mobs, networking, or client rendering.
 
+`RayProfile` is the internal contract for one explicitly supported block type.
+It evaluates a block state, its world position, and a finite shared `Ray`, then
+returns `OPEN`, `SOLID`, or `NO_SPECIAL_RESULT`. `OPEN` permits a future
+traversal to continue past the supported surface; `SOLID` preserves blocking;
+and `NO_SPECIAL_RESULT` delegates fully to vanilla. The profile itself does
+not traverse the world or select unsupported blocks.
+
 ## Geometry foundation
 
 `PixelMask` is an immutable, compact 16-by-16 solid/passable mask backed by
@@ -92,7 +99,7 @@ implemented yet.
 
 ## Current limitations
 
-- No `RayProfile`, registry, traversal, or gameplay integration exists yet.
+- No registry, traversal, or gameplay integration exists yet.
 - No manually defined oak-door opening mask exists yet.
 - Door geometry currently uses a representative mid-plane, not full slab
   thickness or texture-derived detail.
