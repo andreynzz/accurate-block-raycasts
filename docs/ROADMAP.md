@@ -55,15 +55,16 @@ projectiles and vision, and be validated before the next begins.
   profiles. Data profiles may override built-in profiles; invalid files retain
   the safe vanilla/built-in fallback.
 - The Java 25 unit suite passes after the data-profile implementation.
+- Direct parser tests cover a valid profile and rejection of invalid block
+  types and malformed masks.
+- Two server GameTests load a datapack-defined `minecraft:birch_door` profile
+  and verify both arrow traversal to a later block and skeleton line of sight;
+  the full Java 25 GameTest suite passes with 23 required tests.
 
 ## Planned sequence
 
-1. Add direct coverage for datapack parsing/reload behavior, including invalid
-   profiles and a gameplay test using a data-provided profile.
-2. Validate the data-profile branch with the full Java 25 unit, GameTest, and
-   build suite before it is merged into `develop`.
-3. Add an external registration API for mod compatibility.
-4. Only then investigate resource-pack/model-derived geometry.
+1. Add an external registration API for mod compatibility.
+2. Only then investigate resource-pack/model-derived geometry.
 
 ## Scope guardrails
 

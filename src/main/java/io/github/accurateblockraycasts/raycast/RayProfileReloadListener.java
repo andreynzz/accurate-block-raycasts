@@ -51,13 +51,8 @@ public final class RayProfileReloadListener extends SimplePreparableReloadListen
     private static void load(Identifier resourceId, Resource resource, Map<Block, RayProfile> profiles) {
         try (Reader reader = resource.openAsReader()) {
             JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-            String type = requiredString(json, "type");
             Block block = requiredBlock(json);
-            RayProfile profile = switch (type) {
-                case "door" -> new DoorRayProfile(requireDoor(block, resourceId), DoorMask.fromHalves(mask(json, "lower"), mask(json, "upper")));
-                case "trapdoor" -> new TrapdoorRayProfile(requireTrapdoor(block, resourceId), mask(json, "mask"));
-                default -> throw new IllegalArgumentException("unknown profile type '" + type + "'");
-            };
+            RayProfile profile = parseProfile(json, resourceId);
             if (profiles.containsKey(block)) {
                 throw new IllegalArgumentException("more than one profile targets block " + BuiltInRegistries.BLOCK.getKey(block));
             }
@@ -65,6 +60,17 @@ public final class RayProfileReloadListener extends SimplePreparableReloadListen
         } catch (IOException | RuntimeException exception) {
             LOGGER.error("Ignoring invalid ray profile {} from {}: {}", resourceId, resource.sourcePackId(), exception.getMessage());
         }
+    }
+
+    /** Parses one profile document; package visibility keeps validation directly testable. */
+    static RayProfile parseProfile(JsonObject json, Identifier resourceId) {
+        String type = requiredString(json, "type");
+        Block block = requiredBlock(json);
+        return switch (type) {
+            case "door" -> new DoorRayProfile(requireDoor(block, resourceId), DoorMask.fromHalves(mask(json, "lower"), mask(json, "upper")));
+            case "trapdoor" -> new TrapdoorRayProfile(requireTrapdoor(block, resourceId), mask(json, "mask"));
+            default -> throw new IllegalArgumentException("unknown profile type '" + type + "'");
+        };
     }
 
     private static Block requiredBlock(JsonObject json) {
