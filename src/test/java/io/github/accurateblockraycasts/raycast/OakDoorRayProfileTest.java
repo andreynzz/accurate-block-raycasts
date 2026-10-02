@@ -34,7 +34,7 @@ class OakDoorRayProfileTest {
     @MethodSource("closedDoorFacings")
     void classifiesOpeningsAndSolidPixelsForEveryClosedFacing(Direction facing) {
         BlockState state = oakDoor(facing, false, DoorHingeSide.LEFT);
-        DoorTransform transform = DoorTransform.forOakDoor(state, LOWER_POS);
+        DoorTransform transform = DoorTransform.forDoor(state, LOWER_POS);
 
         assertEquals(RayProfileResult.OPEN, evaluate(state, crossingRay(transform, 0.25, 0.675)));
         assertEquals(RayProfileResult.SOLID, evaluate(state, crossingRay(transform, 0.15, 0.675)));
@@ -44,7 +44,7 @@ class OakDoorRayProfileTest {
     @MethodSource("openDoorStates")
     void classifiesTheSameMaskAfterOpenDoorRotation(Direction facing, DoorHingeSide hinge) {
         BlockState state = oakDoor(facing, true, hinge);
-        DoorTransform transform = DoorTransform.forOakDoor(state, LOWER_POS);
+        DoorTransform transform = DoorTransform.forDoor(state, LOWER_POS);
 
         assertEquals(RayProfileResult.OPEN, evaluate(state, crossingRay(transform, 0.25, 0.675)));
         assertEquals(RayProfileResult.SOLID, evaluate(state, crossingRay(transform, 0.15, 0.675)));
@@ -65,7 +65,7 @@ class OakDoorRayProfileTest {
     @Test
     void preservesVanillaBehaviorAtTheSurfaceBoundary() {
         BlockState state = oakDoor(Direction.NORTH, false, DoorHingeSide.LEFT);
-        DoorTransform transform = DoorTransform.forOakDoor(state, LOWER_POS);
+        DoorTransform transform = DoorTransform.forDoor(state, LOWER_POS);
 
         assertEquals(RayProfileResult.NO_SPECIAL_RESULT, evaluate(state, crossingRay(transform, 1.0, 0.675)));
         assertEquals(RayProfileResult.NO_SPECIAL_RESULT, evaluate(state, crossingRay(transform, 0.25, 1.0)));

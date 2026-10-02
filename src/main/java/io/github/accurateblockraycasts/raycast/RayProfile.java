@@ -1,6 +1,7 @@
 package io.github.accurateblockraycasts.raycast;
 
 import io.github.accurateblockraycasts.geometry.Ray;
+import io.github.accurateblockraycasts.geometry.Vec3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -16,4 +17,13 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface RayProfile {
     /** Evaluates this profile for a block state at one world position. */
     RayProfileResult evaluate(BlockState state, BlockPos position, Ray ray);
+
+    /**
+     * Returns whether a point already inside this block occupies a passable
+     * part of the profile. Non-planar or unsupported profiles preserve vanilla
+     * behavior by returning {@code false}.
+     */
+    default boolean isPassableAt(BlockState state, BlockPos position, Vec3 worldPoint) {
+        return false;
+    }
 }

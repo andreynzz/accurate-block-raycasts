@@ -1,6 +1,8 @@
 package io.github.accurateblockraycasts.raycast;
 
+import io.github.accurateblockraycasts.geometry.Vec3;
 import java.util.Objects;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
@@ -8,6 +10,21 @@ import org.jspecify.annotations.Nullable;
 /** Resolves shared ray profiles only for explicitly supported block states. */
 public final class RayProfileRegistry {
     public static final RayProfileRegistry INSTANCE = new RayProfileRegistry();
+    private static final RayProfile ACACIA_DOOR = new DoorRayProfile(Blocks.ACACIA_DOOR, OtherWoodDoorMasks.acacia());
+    private static final RayProfile BAMBOO_DOOR = new DoorRayProfile(Blocks.BAMBOO_DOOR, OtherWoodDoorMasks.bamboo());
+    private static final RayProfile CHERRY_DOOR = new DoorRayProfile(Blocks.CHERRY_DOOR, OtherWoodDoorMasks.cherry());
+    private static final RayProfile COPPER_DOOR = new DoorRayProfile(Blocks.COPPER_DOOR.weathering().unaffected(), CopperDoorMasks.fullDoor());
+    private static final RayProfile EXPOSED_COPPER_DOOR = new DoorRayProfile(Blocks.COPPER_DOOR.weathering().exposed(), CopperDoorMasks.fullDoor());
+    // Vanilla's iron door has the same two-by-two upper-window layout as oak.
+    private static final RayProfile IRON_DOOR = new DoorRayProfile(Blocks.IRON_DOOR, OakDoorMasks.fullDoor());
+    private static final RayProfile JUNGLE_DOOR = new DoorRayProfile(Blocks.JUNGLE_DOOR, OtherWoodDoorMasks.jungle());
+    private static final RayProfile POPLAR_DOOR = new DoorRayProfile(Blocks.POPLAR_DOOR, OtherWoodDoorMasks.poplar());
+    private static final RayProfile WEATHERED_COPPER_DOOR = new DoorRayProfile(Blocks.COPPER_DOOR.weathering().weathered(), CopperDoorMasks.fullDoor());
+    private static final RayProfile OXIDIZED_COPPER_DOOR = new DoorRayProfile(Blocks.COPPER_DOOR.weathering().oxidized(), CopperDoorMasks.fullDoor());
+    private static final RayProfile WAXED_COPPER_DOOR = new DoorRayProfile(Blocks.COPPER_DOOR.waxed().unaffected(), CopperDoorMasks.fullDoor());
+    private static final RayProfile WAXED_EXPOSED_COPPER_DOOR = new DoorRayProfile(Blocks.COPPER_DOOR.waxed().exposed(), CopperDoorMasks.fullDoor());
+    private static final RayProfile WAXED_WEATHERED_COPPER_DOOR = new DoorRayProfile(Blocks.COPPER_DOOR.waxed().weathered(), CopperDoorMasks.fullDoor());
+    private static final RayProfile WAXED_OXIDIZED_COPPER_DOOR = new DoorRayProfile(Blocks.COPPER_DOOR.waxed().oxidized(), CopperDoorMasks.fullDoor());
 
     private RayProfileRegistry() {
     }
@@ -18,6 +35,57 @@ public final class RayProfileRegistry {
      */
     public @Nullable RayProfile resolve(BlockState state) {
         Objects.requireNonNull(state, "state");
-        return state.is(Blocks.OAK_DOOR) ? OakDoorRayProfile.INSTANCE : null;
+        if (state.is(Blocks.OAK_DOOR)) {
+            return OakDoorRayProfile.INSTANCE;
+        }
+        if (state.is(Blocks.ACACIA_DOOR)) {
+            return ACACIA_DOOR;
+        }
+        if (state.is(Blocks.BAMBOO_DOOR)) {
+            return BAMBOO_DOOR;
+        }
+        if (state.is(Blocks.CHERRY_DOOR)) {
+            return CHERRY_DOOR;
+        }
+        if (state.is(Blocks.COPPER_DOOR.weathering().unaffected())) {
+            return COPPER_DOOR;
+        }
+        if (state.is(Blocks.COPPER_DOOR.weathering().exposed())) {
+            return EXPOSED_COPPER_DOOR;
+        }
+        if (state.is(Blocks.IRON_DOOR)) {
+            return IRON_DOOR;
+        }
+        if (state.is(Blocks.JUNGLE_DOOR)) {
+            return JUNGLE_DOOR;
+        }
+        if (state.is(Blocks.POPLAR_DOOR)) {
+            return POPLAR_DOOR;
+        }
+        if (state.is(Blocks.COPPER_DOOR.weathering().weathered())) {
+            return WEATHERED_COPPER_DOOR;
+        }
+        if (state.is(Blocks.COPPER_DOOR.weathering().oxidized())) {
+            return OXIDIZED_COPPER_DOOR;
+        }
+        if (state.is(Blocks.COPPER_DOOR.waxed().unaffected())) {
+            return WAXED_COPPER_DOOR;
+        }
+        if (state.is(Blocks.COPPER_DOOR.waxed().exposed())) {
+            return WAXED_EXPOSED_COPPER_DOOR;
+        }
+        if (state.is(Blocks.COPPER_DOOR.waxed().weathered())) {
+            return WAXED_WEATHERED_COPPER_DOOR;
+        }
+        return state.is(Blocks.COPPER_DOOR.waxed().oxidized()) ? WAXED_OXIDIZED_COPPER_DOOR : null;
+    }
+
+    /** Returns whether a supported profile has an opening at this world point. */
+    public boolean isPassableAt(BlockState state, BlockPos position, Vec3 worldPoint) {
+        Objects.requireNonNull(state, "state");
+        Objects.requireNonNull(position, "position");
+        Objects.requireNonNull(worldPoint, "worldPoint");
+        RayProfile profile = resolve(state);
+        return profile != null && profile.isPassableAt(state, position, worldPoint);
     }
 }

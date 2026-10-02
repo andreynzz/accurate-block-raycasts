@@ -51,24 +51,23 @@ not traverse the world or select unsupported blocks.
 packed bits. It is intended to describe the logical blocking pattern once for
 each supported profile, not once per world-facing direction.
 
-For the initial oak-door profile, the masks are manually encoded server-side
-from a one-time inspection of the vanilla 26.3 appearance: the lower half is
-solid and the upper half has four 4-by-3-pixel windows. The implementation
-contains only this opening geometry, not texture data, and never reads client
-assets during gameplay.
+Door masks are manually encoded server-side from a one-time inspection of the
+vanilla 26.3 appearance. The implementation contains only opening geometry,
+not texture data, and never reads client assets during gameplay.
 
 `DoorMask` presents those lower and upper `PixelMask` instances as one
 continuous 16-by-32 surface, with rows indexed bottom-to-top. It retains the
 immutable halves rather than duplicating their packed bits.
 
-`OakDoorRayProfile` combines this surface with `DoorTransform`. It returns
+`DoorRayProfile` combines this surface with `DoorTransform`. It returns
 `OPEN` or `SOLID` only when the finite ray crosses the door mid-plane within
 the mask bounds. Exact outer edges and rays with no relevant plane
 intersection return `NO_SPECIAL_RESULT`, conservatively preserving vanilla.
 
-`RayProfileRegistry` resolves the singleton oak-door profile by block state.
-It returns no profile for every unsupported block, so the future traversal can
-immediately leave that block to vanilla without registry maps or string lookups.
+`RayProfileRegistry` resolves only manually verified profiles: oak, acacia,
+bamboo, cherry, jungle, poplar, iron, and all copper oxidation/wax variants.
+Visually opaque doors receive no profile because vanilla already blocks their
+rays correctly. Every other unsupported block also remains on the vanilla path.
 
 `PerforatedRaycaster` owns the shared retry loop. It calls the gameplay
 adapter's vanilla trace, returns its result unchanged unless the resolved
@@ -94,12 +93,10 @@ server-safe value types for deterministic ray/plane math. A `Ray` is a finite
 segment, and `Plane.intersect` returns no result for parallel or out-of-range
 segments.
 
-## Canonical oak-door coordinates
+## Canonical door coordinates
 
-The oak-door transform is established on `feature/door-transform` and is
-intended to be integrated before a door profile is introduced. `DoorTransform`
-maps a vanilla oak-door `BlockState`, block position, and world-space point or
-ray intersection into one logical two-block door surface.
+`DoorTransform` maps a vanilla `DoorBlock` state, block position, and
+world-space point or ray intersection into one logical two-block door surface.
 
 Its convention is:
 
@@ -132,13 +129,12 @@ The Minecraft 26.3 source was inspected before planning integration:
 - `LivingEntity.hasLineOfSight` performs `Level.clip` with
   `ClipContext.Block.COLLIDER` and considers a `MISS` visible.
 
-These paths are recorded for future narrow hooks only; no gameplay Mixins are
-implemented yet.
+The corresponding narrow gameplay Mixins are implemented and covered by
+server GameTests.
 
 ## Current limitations
 
-- No end-to-end gameplay scenario has been tested in a running Minecraft world.
 - Door geometry currently uses a representative mid-plane, not full slab
   thickness or texture-derived detail.
-- The door transform validates a single oak-door state; pairing/validating the
+- The door transform validates a single door state; pairing/validating the
   neighboring door half is left to the later profile/traversal layer.
