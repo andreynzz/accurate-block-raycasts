@@ -51,6 +51,12 @@ not traverse the world or select unsupported blocks.
 packed bits. It is intended to describe the logical blocking pattern once for
 each supported profile, not once per world-facing direction.
 
+For the initial oak-door profile, the masks are manually encoded server-side
+from a one-time inspection of the vanilla 26.3 appearance: the lower half is
+solid and the upper half has four 4-by-3-pixel windows. The implementation
+contains only this opening geometry, not texture data, and never reads client
+assets during gameplay.
+
 `Vec3`, `Ray`, `Plane`, and `RayPlaneIntersection` provide small,
 server-safe value types for deterministic ray/plane math. A `Ray` is a finite
 segment, and `Plane.intersect` returns no result for parallel or out-of-range
@@ -100,6 +106,7 @@ implemented yet.
 ## Current limitations
 
 - No registry, traversal, or gameplay integration exists yet.
+- No manually defined oak-door opening mask exists yet.
 - No manually defined oak-door opening mask exists yet.
 - Door geometry currently uses a representative mid-plane, not full slab
   thickness or texture-derived detail.
