@@ -53,6 +53,25 @@ class RayProfileRegistryTest {
     }
 
     @Test
+    void resolvesProfilesOnlyForVerifiedTrapdoorsWithOpenings() {
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.ACACIA_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BAMBOO_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.CHERRY_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.CRIMSON_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.JUNGLE_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.MANGROVE_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.OAK_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.POPLAR_TRAPDOOR.defaultBlockState()));
+        assertNotNull(RayProfileRegistry.INSTANCE.resolve(Blocks.WARPED_TRAPDOOR.defaultBlockState()));
+
+        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.BIRCH_TRAPDOOR.defaultBlockState()));
+        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.DARK_OAK_TRAPDOOR.defaultBlockState()));
+        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.IRON_TRAPDOOR.defaultBlockState()));
+        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.PALE_OAK_TRAPDOOR.defaultBlockState()));
+        assertNull(RayProfileRegistry.INSTANCE.resolve(Blocks.SPRUCE_TRAPDOOR.defaultBlockState()));
+    }
+
+    @Test
     void delegatesOpeningChecksOnlyToResolvedProfiles() {
         BlockPos position = BlockPos.ZERO;
         Vec3 opening = new Vec3(0.25, 1.4, 0.5);
