@@ -50,6 +50,26 @@ The first command runs deterministic unit tests. The second starts Fabric's
 dedicated GameTest server and verifies gameplay behavior for supported door and
 trapdoor profile families.
 
+## CI and releases
+
+GitHub Actions validates every push to `develop`, every pull request targeting
+`develop`, and manually requested runs. The CI workflow verifies the Gradle
+Wrapper, runs unit tests and server GameTests, builds the mod, and uploads the
+generated JARs as workflow artifacts.
+
+To publish an approved release commit, create and push a tag in the
+`vMAJOR.MINOR.PATCH` format:
+
+```powershell
+git tag -a v0.1.0 -m "Release v0.1.0"
+git push origin v0.1.0
+```
+
+The release workflow validates the tag, builds the JAR using its version, then
+creates a GitHub Release with generated notes and the production JAR attached.
+It currently publishes only to GitHub Releases; Modrinth and CurseForge are
+planned for a later release process.
+
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md): server authority, shared ray traversal,
