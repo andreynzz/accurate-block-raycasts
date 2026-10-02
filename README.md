@@ -72,6 +72,31 @@ The first command runs deterministic unit tests. The second starts Fabric's
 dedicated GameTest server and verifies gameplay behavior for supported door and
 trapdoor profile families.
 
+## Data-driven profiles
+
+Server data packs may add or override a supported door or trapdoor profile.
+Place one JSON file per block at
+`data/<namespace>/accurateblockraycasts/ray_profiles/<name>.json`. The loader
+runs during the normal server data reload; invalid files are ignored and leave
+vanilla behavior unchanged for that block unless a built-in profile exists.
+
+Masks contain exactly sixteen strings, listed bottom-to-top. `#` is solid and
+`.` is an opening. A door has one mask for each half; a trapdoor has one mask:
+
+```json
+{
+  "type": "door",
+  "block": "example:perforated_door",
+  "lower": ["################", "################", "################", "################", "################", "################", "################", "################", "################", "################", "################", "################", "################", "################", "################", "################"],
+  "upper": ["################", "################", "################", "################", "###....##....###", "###....##....###", "###....##....###", "################", "################", "###....##....###", "###....##....###", "###....##....###", "################", "################", "################", "################"]
+}
+```
+
+The declared block must be a registered `DoorBlock` or `TrapDoorBlock` matching
+the chosen `type`. Profiles still use the same server-side geometry for arrows
+and common mob line of sight; this feature does not inspect client textures or
+models.
+
 ## CI and releases
 
 GitHub Actions validates every push to `develop`, every pull request targeting

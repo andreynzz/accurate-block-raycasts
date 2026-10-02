@@ -2,8 +2,10 @@ package io.github.accurateblockraycasts.raycast;
 
 import io.github.accurateblockraycasts.geometry.Vec3;
 import java.util.Objects;
+import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
@@ -43,6 +45,7 @@ public final class RayProfileRegistry {
     private static final RayProfile WAXED_EXPOSED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().exposed(), TrapdoorMasks.copper());
     private static final RayProfile WAXED_WEATHERED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().weathered(), TrapdoorMasks.copper());
     private static final RayProfile WAXED_OXIDIZED_COPPER_TRAPDOOR = new TrapdoorRayProfile(Blocks.COPPER_TRAPDOOR.waxed().oxidized(), TrapdoorMasks.copper());
+    private volatile Map<Block, RayProfile> dataProfiles = Map.of();
 
     private RayProfileRegistry() {
     }
@@ -53,6 +56,10 @@ public final class RayProfileRegistry {
      */
     public @Nullable RayProfile resolve(BlockState state) {
         Objects.requireNonNull(state, "state");
+        RayProfile dataProfile = dataProfiles.get(state.getBlock());
+        if (dataProfile != null) {
+            return dataProfile;
+        }
         if (state.is(Blocks.OAK_DOOR)) {
             return OakDoorRayProfile.INSTANCE;
         }
@@ -150,6 +157,11 @@ public final class RayProfileRegistry {
             return IRON_TRAPDOOR;
         }
         return state.is(Blocks.WARPED_TRAPDOOR) ? WARPED_TRAPDOOR : null;
+    }
+
+    /** Atomically replaces the profiles loaded from server data packs. */
+    void replaceDataProfiles(Map<Block, RayProfile> profiles) {
+        dataProfiles = Map.copyOf(profiles);
     }
 
     /** Returns whether a supported profile has an opening at this world point. */
