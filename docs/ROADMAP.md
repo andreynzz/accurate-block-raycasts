@@ -65,11 +65,13 @@ projectiles and vision, and be validated before the next begins.
 - Investigation of Minecraft 26.3 model loading confirmed it is client-only;
   automatic runtime resource-pack derivation is deferred to preserve server
   authority. See `MODEL_GEOMETRY_INVESTIGATION.md`.
+- Offline PNG-to-datapack generation for 16-by-16 door textures, preserving
+  conservative alpha handling and server-owned profile distribution.
 
 ## Planned sequence
 
-1. Consider an offline model-to-datapack generator only when a server-owned
-   resource-pack workflow is defined.
+1. Optionally add resource-pack and blockstate/model resolution on top of the
+   offline generator when its supported model subset is specified.
 
 ## Scope guardrails
 
