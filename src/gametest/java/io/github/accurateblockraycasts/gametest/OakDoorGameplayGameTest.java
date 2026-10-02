@@ -27,6 +27,7 @@ public final class OakDoorGameplayGameTest implements CustomTestMethodInvoker {
     @GameTest(structure = "fabric-gametest-api-v1:empty", maxTicks = 20, padding = 10)
     public void arrowPassesThroughOpeningAndHitsLaterBlock(GameTestHelper helper) {
         placeOakDoor(helper);
+        BlockPos doorPosition = helper.absolutePos(DOOR_LOWER);
         BlockPos backstop = new BlockPos(3, 1, 6);
         helper.setBlock(backstop, Blocks.STONE);
 
@@ -35,7 +36,7 @@ public final class OakDoorGameplayGameTest implements CustomTestMethodInvoker {
         arrow.setDeltaMovement(0.0, 0.0, 1.0);
         helper.runAfterDelay(8, () -> {
             helper.assertTrue(arrow.getDeltaMovement().lengthSqr() == 0.0, "arrow should collide with the later stone block");
-            helper.assertTrue(arrow.position().z > 5.8, "arrow should not embed in the oak door");
+            helper.assertTrue(arrow.position().z > doorPosition.getZ() + 2.5, "arrow should not embed in the oak door");
             helper.succeed();
         });
     }
