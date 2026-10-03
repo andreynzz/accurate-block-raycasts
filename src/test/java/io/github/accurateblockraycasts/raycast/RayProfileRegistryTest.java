@@ -3,10 +3,12 @@ package io.github.accurateblockraycasts.raycast;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.accurateblockraycasts.geometry.Vec3;
+import java.util.Map;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.Bootstrap;
@@ -90,5 +92,53 @@ class RayProfileRegistryTest {
 
         assertTrue(RayProfileRegistry.INSTANCE.isPassableAt(Blocks.OAK_DOOR.defaultBlockState(), position, opening));
         assertFalse(RayProfileRegistry.INSTANCE.isPassableAt(Blocks.STONE.defaultBlockState(), position, opening));
+    }
+
+    @Test
+    void dataProfilesOverrideTheBuiltInProfileForTheirBlock() {
+        RayProfile override = (state, position, ray) -> RayProfileResult.SOLID;
+        RayProfileRegistry.INSTANCE.replaceDataProfiles(Map.of(Blocks.OAK_DOOR, override));
+        try {
+            assertSame(override, RayProfileRegistry.INSTANCE.resolve(Blocks.OAK_DOOR.defaultBlockState()));
+        } finally {
+            RayProfileRegistry.INSTANCE.replaceDataProfiles(Map.of());
+        }
+    }
+
+    @Test
+    void registersAnExternalProfileForAnOtherwiseUnsupportedBlock() {
+        RayProfile profile = (state, position, ray) -> RayProfileResult.SOLID;
+        RayProfileRegistry.INSTANCE.register(Blocks.BIRCH_DOOR, profile);
+        try {
+            assertSame(profile, RayProfileRegistry.INSTANCE.resolve(Blocks.BIRCH_DOOR.defaultBlockState()));
+        } finally {
+            RayProfileRegistry.INSTANCE.replaceRegisteredProfiles(Map.of());
+        }
+    }
+
+    @Test
+    void dataProfilesTakePrecedenceOverExternalRegistrations() {
+        RayProfile externalProfile = (state, position, ray) -> RayProfileResult.SOLID;
+        RayProfile dataProfile = (state, position, ray) -> RayProfileResult.OPEN;
+        RayProfileRegistry.INSTANCE.register(Blocks.BIRCH_DOOR, externalProfile);
+        RayProfileRegistry.INSTANCE.replaceDataProfiles(Map.of(Blocks.BIRCH_DOOR, dataProfile));
+        try {
+            assertSame(dataProfile, RayProfileRegistry.INSTANCE.resolve(Blocks.BIRCH_DOOR.defaultBlockState()));
+        } finally {
+            RayProfileRegistry.INSTANCE.replaceDataProfiles(Map.of());
+            RayProfileRegistry.INSTANCE.replaceRegisteredProfiles(Map.of());
+        }
+    }
+
+    @Test
+    void rejectsDuplicateExternalRegistrations() {
+        RayProfile first = (state, position, ray) -> RayProfileResult.SOLID;
+        RayProfile second = (state, position, ray) -> RayProfileResult.OPEN;
+        RayProfileRegistry.INSTANCE.register(Blocks.BIRCH_DOOR, first);
+        try {
+            assertThrows(IllegalStateException.class, () -> RayProfileRegistry.INSTANCE.register(Blocks.BIRCH_DOOR, second));
+        } finally {
+            RayProfileRegistry.INSTANCE.replaceRegisteredProfiles(Map.of());
+        }
     }
 }
