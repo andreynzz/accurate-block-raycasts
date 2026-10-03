@@ -17,8 +17,21 @@ final class ResourcePackDoorTextures {
 
     static Textures find(Path pack, String blockId) throws IOException {
         Id block = Id.parse(blockId);
-        Map<String, String> textures = textures(pack, new Id(block.namespace(), "block/" + block.path() + "_bottom_left"));
+        Map<String, String> textures = textures(pack, modelFromBlockstate(pack, block));
         return new Textures(texture(pack, textures, "bottom"), texture(pack, textures, "top"));
+    }
+
+    private static Id modelFromBlockstate(Path pack, Id block) throws IOException {
+        Path path = pack.resolve("assets").resolve(block.namespace()).resolve("blockstates").resolve(block.path() + ".json");
+        if (!Files.isRegularFile(path)) return new Id(block.namespace(), "block/" + block.path() + "_bottom_left");
+        try (Reader reader = Files.newBufferedReader(path)) {
+            JsonObject variants = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonObject("variants");
+            JsonElement variant = variants.get("facing=east,half=lower,hinge=left,open=false");
+            if (variant == null || !variant.isJsonObject() || !variant.getAsJsonObject().has("model")) {
+                throw new IllegalArgumentException("blockstate does not declare a closed lower-left door model: " + path);
+            }
+            return Id.parse(variant.getAsJsonObject().get("model").getAsString());
+        }
     }
 
     private static Path texture(Path pack, Map<String, String> textures, String slot) {
