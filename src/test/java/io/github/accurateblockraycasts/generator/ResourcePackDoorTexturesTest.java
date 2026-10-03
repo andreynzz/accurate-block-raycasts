@@ -1,6 +1,7 @@
 package io.github.accurateblockraycasts.generator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.awt.image.BufferedImage;
 import java.nio.file.Files;
@@ -28,5 +29,13 @@ class ResourcePackDoorTexturesTest {
 
         assertEquals(textures.resolve("bottom.png"), found.bottom());
         assertEquals(textures.resolve("top.png"), found.top());
+    }
+
+    @Test
+    void rejectsBlockstateAlternativesWithDifferentModels(@TempDir Path pack) throws Exception {
+        Path blockstates = pack.resolve("assets/example/blockstates");
+        Files.createDirectories(blockstates);
+        Files.writeString(blockstates.resolve("test_door.json"), "{\"variants\":{\"facing=east,half=lower,hinge=left,open=false\":[{\"model\":\"example:block/a\"},{\"model\":\"example:block/b\"}]}}");
+        assertThrows(IllegalArgumentException.class, () -> ResourcePackDoorTextures.find(pack, "example:test_door"));
     }
 }
