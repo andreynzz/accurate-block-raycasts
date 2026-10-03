@@ -1,8 +1,15 @@
 # Development Roadmap
 
-This roadmap is incremental. Later phases must not be implemented prematurely:
-each phase should preserve vanilla fallback behavior, reuse shared geometry for
-projectiles and vision, and be validated before the next begins.
+## MVP release
+
+Version `0.1.1` is the completed MVP release. It establishes server-authoritative
+opening geometry, projectile traversal, and the shared common
+`LivingEntity.hasLineOfSight` integration. The gameplay tests for that release
+validate arrows and skeleton line of sight.
+
+Future work is post-MVP improvement work. Each improvement must preserve
+vanilla fallback behavior, reuse shared geometry where applicable, and be
+validated before release.
 
 ## Completed
 
@@ -68,14 +75,21 @@ projectiles and vision, and be validated before the next begins.
 - Offline PNG-to-datapack generation for 16-by-16 door textures, preserving
   conservative alpha handling and server-owned profile distribution.
 
-## Planned sequence
+## Post-MVP improvements
 
-1. Optionally add resource-pack and blockstate/model resolution on top of the
-   offline generator when its supported model subset is specified.
+1. Investigate and extend mob perception paths beyond the skeleton-validated
+   common line-of-sight path. Add representative GameTests for each newly
+   supported path; do not claim universal mob support until it is verified.
+2. Make player block interaction respect supported openings: a click through
+   an `OPEN` profile sample must continue to the later target instead of
+   activating the door or trapdoor. Keep solid samples and unsupported blocks
+   on their vanilla interaction path.
+3. Optionally add further offline resource-pack/model resolution to the
+   profile generator when its supported model subset is specified.
 
 ## Scope guardrails
 
-Until the preceding steps are complete, do not add broad global raycast hooks,
-automatic texture/model scanning, resource-pack synchronization, physical
-collision changes, or client-dependent authoritative logic. Unsupported blocks
-must continue to use vanilla behavior.
+Do not add broad global raycast hooks, automatic runtime texture/model
+scanning, resource-pack synchronization, physical collision changes, or
+client-dependent authoritative logic. Unsupported blocks must continue to use
+vanilla behavior.
