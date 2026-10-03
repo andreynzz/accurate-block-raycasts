@@ -97,7 +97,8 @@ main
  └── release/0.1.1                 completed MVP release
 
 develop
- ├── ci/curseforge-release         publish approved releases to CurseForge
+ ├── build/curseforge-jar-prep      prepare a distributable CurseForge JAR
+ ├── ci/curseforge-release          publish approved prepared JARs to CurseForge
  ├── feature/mob-vision-paths      extend opening-aware vision beyond skeleton coverage
  ├── feature/interaction-through-openings
  │                                  let player clicks pass through OPEN samples
@@ -109,19 +110,24 @@ develop
 
 Recommended order:
 
-1. `ci/curseforge-release` can proceed independently. It should publish only
-   approved release artifacts and obtain its CurseForge credentials from CI
+1. `build/curseforge-jar-prep` can proceed independently. It prepares the
+   distributable JAR and its release-facing metadata: mod metadata, icon,
+   version and artifact naming, dependency declarations, license inclusion,
+   and any CurseForge-required packaging details. It must verify the generated
+   JAR before a release is published.
+2. `ci/curseforge-release` depends on the prepared artifact. It should publish
+   only approved release JARs and obtain its CurseForge credentials from CI
    secrets.
-2. `feature/mob-vision-paths` must first identify the actual Minecraft 26.3
+3. `feature/mob-vision-paths` must first identify the actual Minecraft 26.3
    perception paths used by failing mobs, then add focused integrations and
    representative GameTests.
-3. `feature/interaction-through-openings` must inspect the Minecraft 26.3
+4. `feature/interaction-through-openings` must inspect the Minecraft 26.3
    player-interaction raycast path before selecting a narrow integration point.
    It must preserve vanilla interaction for solid samples and unsupported
    blocks.
-4. `perf/raycast-hot-path` follows the new gameplay integrations so it can
+5. `perf/raycast-hot-path` follows the new gameplay integrations so it can
    optimize measured shared-path costs rather than speculative code paths.
-5. Create `release/0.1.2` from `develop` only after the selected improvements
+6. Create `release/0.1.2` from `develop` only after the selected improvements
    are validated. Merge it to `main` by PR, tag the release, then merge it back
    to `develop`.
 
