@@ -10,7 +10,7 @@ parts of the block continue to block both behaviors.
 
 ## Status
 
-This is an early development build (`0.1.0-SNAPSHOT`). It supports the vanilla
+This is the initial public release (`0.1.1`). It supports the vanilla
 arrow and the common `LivingEntity` visibility path on the logical server. The
 unit suite and all 21 server GameTests currently pass with Java 25.
 
@@ -137,8 +137,8 @@ To publish an approved release commit, create and push a tag in the
 `vMAJOR.MINOR.PATCH` format:
 
 ```powershell
-git tag -a v0.1.0 -m "Release v0.1.0"
-git push origin v0.1.0
+git tag -a v0.1.1 -m "Release v0.1.1"
+git push origin v0.1.1
 ```
 
 The release workflow validates the tag, builds the JAR using its version, then
