@@ -1,8 +1,15 @@
 # Development Roadmap
 
-This roadmap is incremental. Later phases must not be implemented prematurely:
-each phase should preserve vanilla fallback behavior, reuse shared geometry for
-projectiles and vision, and be validated before the next begins.
+## MVP release
+
+Version `0.1.1` is the completed MVP release. It establishes server-authoritative
+opening geometry, projectile traversal, and the shared common
+`LivingEntity.hasLineOfSight` integration. The gameplay tests for that release
+validate arrows and skeleton line of sight.
+
+Future work is post-MVP improvement work. Each improvement must preserve
+vanilla fallback behavior, reuse shared geometry where applicable, and be
+validated before release.
 
 ## Completed
 
@@ -68,14 +75,62 @@ projectiles and vision, and be validated before the next begins.
 - Offline PNG-to-datapack generation for 16-by-16 door textures, preserving
   conservative alpha handling and server-owned profile distribution.
 
-## Planned sequence
+## Post-MVP improvements
 
-1. Optionally add resource-pack and blockstate/model resolution on top of the
-   offline generator when its supported model subset is specified.
+1. Investigate and extend mob perception paths beyond the skeleton-validated
+   common line-of-sight path. Add representative GameTests for each newly
+   supported path; do not claim universal mob support until it is verified.
+2. Make player block interaction respect supported openings: a click through
+   an `OPEN` profile sample must continue to the later target instead of
+   activating the door or trapdoor. Keep solid samples and unsupported blocks
+   on their vanilla interaction path.
+3. Optionally add further offline resource-pack/model resolution to the
+   profile generator when its supported model subset is specified.
+
+## Post-MVP branch map
+
+Post-MVP work branches from `develop` and returns there through review. The
+following branches are the current intended work streams:
+
+```text
+main
+ └── release/0.1.1                 completed MVP release
+
+develop
+ ├── ci/curseforge-release         publish approved releases to CurseForge
+ ├── feature/mob-vision-paths      extend opening-aware vision beyond skeleton coverage
+ ├── feature/interaction-through-openings
+ │                                  let player clicks pass through OPEN samples
+ ├── perf/raycast-hot-path         measure and optimize shared raycast hot paths
+ └── release/0.1.2                 release preparation after selected work is integrated
+     ├── main                      reviewed release merge and tag
+     └── develop                   merge-back after release
+```
+
+Recommended order:
+
+1. `ci/curseforge-release` can proceed independently. It should publish only
+   approved release artifacts and obtain its CurseForge credentials from CI
+   secrets.
+2. `feature/mob-vision-paths` must first identify the actual Minecraft 26.3
+   perception paths used by failing mobs, then add focused integrations and
+   representative GameTests.
+3. `feature/interaction-through-openings` must inspect the Minecraft 26.3
+   player-interaction raycast path before selecting a narrow integration point.
+   It must preserve vanilla interaction for solid samples and unsupported
+   blocks.
+4. `perf/raycast-hot-path` follows the new gameplay integrations so it can
+   optimize measured shared-path costs rather than speculative code paths.
+5. Create `release/0.1.2` from `develop` only after the selected improvements
+   are validated. Merge it to `main` by PR, tag the release, then merge it back
+   to `develop`.
+
+The vision and interaction changes intentionally remain separate branches:
+they affect different vanilla call paths and have independent test criteria.
 
 ## Scope guardrails
 
-Until the preceding steps are complete, do not add broad global raycast hooks,
-automatic texture/model scanning, resource-pack synchronization, physical
-collision changes, or client-dependent authoritative logic. Unsupported blocks
-must continue to use vanilla behavior.
+Do not add broad global raycast hooks, automatic runtime texture/model
+scanning, resource-pack synchronization, physical collision changes, or
+client-dependent authoritative logic. Unsupported blocks must continue to use
+vanilla behavior.

@@ -7,8 +7,9 @@ goal is to let intentional visible openings in supported blocks affect
 gameplay raycasts: projectiles may pass through an opening and mobs may see
 through that same opening, while solid portions still block both.
 
-The mod does not change physical entity collision, pathfinding, interaction,
-or unsupported-block behavior.
+The `v0.1.1` MVP does not change physical entity collision, pathfinding,
+player interaction, or unsupported-block behavior. Player interaction through
+supported openings is a planned post-MVP integration.
 
 ## Authority and fallback
 
@@ -164,3 +165,9 @@ server GameTests.
 - Trapdoor geometry also uses a representative slab mid-plane. Its masks are
   manually maintained static data; resource-pack/model-derived geometry is not
   supported.
+- The common `LivingEntity.hasLineOfSight` hook is shared by many mobs, but
+  release gameplay coverage currently validates skeletons only. Broader mob
+  perception paths require investigation and representative tests.
+- Player block interaction still uses vanilla targeting, so clicking through
+  an opening can activate the supported door or trapdoor. Interaction-aware
+  traversal is post-MVP work.

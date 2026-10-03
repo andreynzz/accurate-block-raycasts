@@ -10,9 +10,11 @@ parts of the block continue to block both behaviors.
 
 ## Status
 
-This is an early development build (`0.1.0-SNAPSHOT`). It supports the vanilla
-arrow and the common `LivingEntity` visibility path on the logical server. The
-unit suite and all 21 server GameTests currently pass with Java 25.
+`v0.1.1` is the completed MVP release. It supports the vanilla arrow and the
+common `LivingEntity` visibility path on the logical server. The release's
+gameplay coverage validates skeleton line of sight; broader mob-perception
+coverage is a post-MVP improvement. The unit suite and all 23 server GameTests
+pass with Java 25.
 
 Supported profiles are manually verified static masks:
 
@@ -28,8 +30,10 @@ unchanged vanilla raycasting.
 ## Scope
 
 The mod changes projectile block raycasts and common mob vision only. It does
-not alter physical entity collision, pathfinding, player interaction, resource
-pack behavior, or block/model texture loading at runtime.
+not alter physical entity collision, pathfinding, resource-pack behavior, or
+block/model texture loading at runtime. Player interaction through supported
+openings is planned as a post-MVP improvement and is not implemented in
+`v0.1.1`.
 
 ## Development requirements
 
