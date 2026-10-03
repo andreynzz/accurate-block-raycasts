@@ -8,7 +8,9 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /** Resolves the two texture slots used by the conventional vanilla door models in a directory pack. */
 final class ResourcePackDoorTextures {
@@ -27,11 +29,20 @@ final class ResourcePackDoorTextures {
         try (Reader reader = Files.newBufferedReader(path)) {
             JsonObject variants = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonObject("variants");
             JsonElement variant = variants.get("facing=east,half=lower,hinge=left,open=false");
-            if (variant == null || !variant.isJsonObject() || !variant.getAsJsonObject().has("model")) {
+            if (variant == null) {
                 throw new IllegalArgumentException("blockstate does not declare a closed lower-left door model: " + path);
             }
-            return Id.parse(variant.getAsJsonObject().get("model").getAsString());
+            Set<String> models = new HashSet<>();
+            if (variant.isJsonObject()) addModel(models, variant.getAsJsonObject());
+            else if (variant.isJsonArray()) for (JsonElement entry : variant.getAsJsonArray()) addModel(models, entry.getAsJsonObject());
+            if (models.size() != 1) throw new IllegalArgumentException("blockstate must select exactly one closed lower-left door model: " + path);
+            return Id.parse(models.iterator().next());
         }
+    }
+
+    private static void addModel(Set<String> models, JsonObject variant) {
+        if (!variant.has("model")) throw new IllegalArgumentException("blockstate variant has no model");
+        models.add(variant.get("model").getAsString());
     }
 
     private static Path texture(Path pack, Map<String, String> textures, String slot) {
