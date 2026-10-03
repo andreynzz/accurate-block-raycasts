@@ -2,6 +2,7 @@ package io.github.accurateblockraycasts.generator;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -61,11 +62,13 @@ public final class DoorProfileGenerator {
     }
 
     private static BufferedImage read(Path path) throws IOException {
-        BufferedImage image = ImageIO.read(path.toFile());
-        if (image == null) {
-            throw new IllegalArgumentException(path + " is not a readable image");
+        try (InputStream input = Files.newInputStream(path)) {
+            BufferedImage image = ImageIO.read(input);
+            if (image == null) {
+                throw new IllegalArgumentException(path + " is not a readable image");
+            }
+            return image;
         }
-        return image;
     }
 
     private static String json(String block, List<String> lower, List<String> upper) {
